@@ -34,17 +34,15 @@ TARGETS = vrip vriphead
 LIBS = -lply -llinear -ltk -ltcl -ldl \
 	-lsl -lc -lm 
 
-INCLS = -I/usr/include/tcl
-
 ROOT = ../..
 
 -include ../compile-flags
 
 vrip: $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(LIBPATHS) $(LIBS) $(INCLS)
+	$(CXX) -o $@ $(OBJS) $(LIBPATHS) $(LIBS)
 
 vriphead: vriphead.o
-	$(CXX) -o $@ vriphead.o $(LIBPATHS) $(LIBS) $(INCLS)
+	$(CXX) -o $@ vriphead.o $(LIBPATHS) $(LIBS)
 
 cysiltoply: cysiltoply.o strings.o
 	$(CXX) -o $@ cysiltoply.o strings.o $(LIBPATHS) -limg -limage $(LIBS)
