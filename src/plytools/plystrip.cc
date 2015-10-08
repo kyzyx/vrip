@@ -14,6 +14,7 @@
 #include <iostream>
 #include <ply.h>
 #include <cassert>
+#include <cstdlib>
 
 
 enum ErrorCode {

@@ -16,7 +16,8 @@ Sean Anderson, February 1999
 
 #include <Linear.h>
 
-#include <vector.h>
+#include <vector>
+using namespace std;
 
 //#include "plyio.h"
 

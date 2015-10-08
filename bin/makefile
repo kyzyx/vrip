@@ -249,154 +249,154 @@ ifeq ($(UNAME), Cygwin)
 else
 
     crunch.tcl:
-	    ln -s ../src/plytools/crunch.tcl crunch.tcl
+	    ln -f -s ../src/plytools/crunch.tcl crunch.tcl
 
     ply2asc:
-	    ln -s ../src/plytools/ply2asc ply2asc
+	    ln -f -s ../src/plytools/ply2asc ply2asc
 
     ply2bin:
-	    ln -s ../src/plytools/ply2bin ply2bin
+	    ln -f -s ../src/plytools/ply2bin ply2bin
 
     ply2bboxcube:
-	    ln -s ../src/plytools/ply2bboxcube ply2bboxcube
+	    ln -f -s ../src/plytools/ply2bboxcube ply2bboxcube
 
     ply2crunchset:
-	    ln -s ../src/plytools/ply2crunchset ply2crunchset
+	    ln -f -s ../src/plytools/ply2crunchset ply2crunchset
 
     ply2verts:
-	    ln -s ../src/plytools/ply2verts ply2verts
+	    ln -f -s ../src/plytools/ply2verts ply2verts
 
     plyaddinfo:
-	    ln -s ../src/plytools/plyaddinfo plyaddinfo
+	    ln -f -s ../src/plytools/plyaddinfo plyaddinfo
 
     plyarea:
-	    ln -s ../src/plytools/plyarea plyarea
+	    ln -f -s ../src/plytools/plyarea plyarea
 
     plybbox:
-	    ln -s ../src/plytools/plybbox plybbox
+	    ln -f -s ../src/plytools/plybbox plybbox
 
     plybound:
-	    ln -s ../src/plytools/plybound plybound
+	    ln -f -s ../src/plytools/plybound plybound
 
     plycomps:
-	    ln -s ../src/plytools/plycomps plycomps
+	    ln -f -s ../src/plytools/plycomps plycomps
 
     plycrunch:
-	    ln -s ../src/plytools/plycrunch plycrunch
+	    ln -f -s ../src/plytools/plycrunch plycrunch
 
     plyflip:
-	    ln -s ../src/plytools/plyflip plyflip
+	    ln -f -s ../src/plytools/plyflip plyflip
 
     plyhead:
-	    ln -s ../src/plytools/plyhead plyhead
+	    ln -f -s ../src/plytools/plyhead plyhead
 
     plynormals:
-	    ln -s ../src/plytools/plynormals plynormals
+	    ln -f -s ../src/plytools/plynormals plynormals
 
     plyremove:
-	    ln -s ../src/plytools/plyremove plyremove
+	    ln -f -s ../src/plytools/plyremove plyremove
 
     plys2set:
-	    ln -s ../src/plytools/plys2set plys2set
+	    ln -f -s ../src/plytools/plys2set plys2set
 
     plysets2conf:
-	    ln -s ../src/plytools/plysets2conf plysets2conf
+	    ln -f -s ../src/plytools/plysets2conf plysets2conf
 
     plysetlevel:
-	    ln -s ../src/plytools/plysetlevel plysetlevel
+	    ln -f -s ../src/plytools/plysetlevel plysetlevel
 
     plyshared:
-	    ln -s ../src/plytools/plyshared plyshared
+	    ln -f -s ../src/plytools/plyshared plyshared
 
     plysubtract:
-	    ln -s ../src/plytools/plysubtract plysubtract
+	    ln -f -s ../src/plytools/plysubtract plysubtract
 
     plystrip:
-	    ln -s ../src/plytools/plystrip plystrip
+	    ln -f -s ../src/plytools/plystrip plystrip
 
     plyunshared:
-	    ln -s ../src/plytools/plyunshared plyunshared
+	    ln -f -s ../src/plytools/plyunshared plyunshared
 
     plyusages:
-	    ln -s ../src/plytools/plyusages.csh plyusages
+	    ln -f -s ../src/plytools/plyusages.csh plyusages
 
     plyxform:
-	    ln -s ../src/plytools/plyxform plyxform
+	    ln -f -s ../src/plytools/plyxform plyxform
 
     plydice:
-	    ln -s ../src/plytools/plydice plydice
+	    ln -f -s ../src/plytools/plydice plydice
 
     plymirror:
-	    ln -s ../src/plytools/plymirror plymirror
+	    ln -f -s ../src/plytools/plymirror plymirror
 
     plyvolume:
-	    ln -s ../src/plytools/plyvolume plyvolume
+	    ln -f -s ../src/plytools/plyvolume plyvolume
 
     plysubdiv:
-	    ln -s ../src/plytools/plysubdiv plysubdiv
+	    ln -f -s ../src/plytools/plysubdiv plysubdiv
 
     xyz2ply:
-	    ln -s ../src/plytools/xyz2ply xyz2ply
+	    ln -f -s ../src/plytools/xyz2ply xyz2ply
 
     mm2plys:
-	    ln -s ../src/plytools/mm2plys mm2plys
+	    ln -f -s ../src/plytools/mm2plys mm2plys
 
     vrip:
-	    ln -s ../src/vrip/vrip.csh vrip
+	    ln -f -s ../src/vrip/vrip.csh vrip
 
     vriphead:
-	    ln -s ../src/vrip/vriphead vriphead
+	    ln -f -s ../src/vrip/vriphead vriphead
 
     vripmarch:
-	    ln -s ../src/march/vripmarch vripmarch
+	    ln -f -s ../src/march/vripmarch vripmarch
 
     vripnew:
-	    ln -s ../src/vrip/vripnew.csh vripnew
+	    ln -f -s ../src/vrip/vripnew.csh vripnew
 
     vripslicer:
-	    ln -s ../src/vrip/vripslicer.csh vripslicer
+	    ln -f -s ../src/vrip/vripslicer.csh vripslicer
 
     vripsurf:
-	    ln -s ../src/vrip/vripsurf.csh vripsurf
+	    ln -f -s ../src/vrip/vripsurf.csh vripsurf
 
     vripupdate:
-	    ln -s ../src/vrip/vripupdate.csh vripupdate
+	    ln -f -s ../src/vrip/vripupdate.csh vripupdate
 
     loadbalance:
-	    ln -s ../src/pvrip/loadbalance loadbalance
+	    ln -f -s ../src/pvrip/loadbalance loadbalance
 
     permute:
-	    ln -s ../src/pvrip/permute permute
+	    ln -f -s ../src/pvrip/permute permute
 
     plycull:
-	    ln -s ../src/pvrip/plycull plycull
+	    ln -f -s ../src/pvrip/plycull plycull
 
     plycullmaxx:
-	    ln -s ../src/pvrip/plycullmaxx plycullmaxx
+	    ln -f -s ../src/pvrip/plycullmaxx plycullmaxx
 
     plymerge:
-	    ln -s ../src/pvrip/plymerge plymerge
+	    ln -f -s ../src/pvrip/plymerge plymerge
 
     pvrip1:
-	    ln -s ../src/pvrip/pvrip1 pvrip1
+	    ln -f -s ../src/pvrip/pvrip1 pvrip1
 
     pvrip2:
-	    ln -s ../src/pvrip/pvrip2 pvrip2
+	    ln -f -s ../src/pvrip/pvrip2 pvrip2
 
     pvripsplit:
-	    ln -s ../src/pvrip/pvripsplit pvripsplit
+	    ln -f -s ../src/pvrip/pvripsplit pvripsplit
 
     vripsplit:
-	    ln -s ../src/pvrip/vripsplit vripsplit
+	    ln -f -s ../src/pvrip/vripsplit vripsplit
 
     vripsubvollist:
-	    ln -s ../src/pvrip/vripsubvollist vripsubvollist
+	    ln -f -s ../src/pvrip/vripsubvollist vripsubvollist
 
     plyclean:
-	    ln -s ../src/plyclean/plyclean plyclean
+	    ln -f -s ../src/plyclean/plyclean plyclean
 
     plygridtomesh:
-	    ln -s ../src/vrip/plygridtomesh plygridtomesh
+	    ln -f -s ../src/vrip/plygridtomesh plygridtomesh
 
 endif
 
