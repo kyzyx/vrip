@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+#
+# plycrunch a ply file, and then generate a .set file for it.
+
+$LEVELS = 4;
+
+sub printUsage {
+    print STDERR "\n";
+    print STDERR "Usage:  ply2crunchset [options] in.ply...\n";
+    print STDERR "\n";
+    print STDERR "Options:\n";
+    print STDERR "         -l levels    number of levels for final\n";
+    print STDERR "                      .set file (default $LEVELS)\n";
+    print STDERR "\n";
+    exit(-1);
+}
+
+if ($#ARGV < 0 || substr($ARGV[0], 0, 2) eq "-h") {
+    &printUsage;
+}
+
+# Handle any -args
+while (substr($ARGV[0], 0, 1) eq "-") {
+    if ($ARGV[0] eq "-l") {
+	if ($#ARGV < 1) {
+	    print STDERR "Err: -l needs a level.\n";
+	    &printUsage();
+	} else {
+	    $LEVELS = int($ARGV[1]);
+	    if ($LEVELS < 1) {
+		print STDERR "Err: levels must be at least 1!\n";
+		&printUsage();
+	    }
+	    splice(@ARGV, 0, 2);
+	}
+    } else {
+	print STDERR "Error: Unhandled arg: $ARGV[0]\n";
+	&printUsage();
+    }
+}
+
+# For each ply file from now on, crunch it a set....
+for ($i=0; $i <= $#ARGV; $i++) {
+    $orig = $ARGV[$i];
+    $plys = "$orig ";
+    $last = $orig;
+    # Crunch last resolution down to the next one...
+    for ($n=2; $n <= $LEVELS; $n++) {
+	$out = $orig;
+	$out =~ s/.ply/_res$n.ply/g;
+	$cmd = "plycrunch $last > $out\n";
+	print $cmd;
+	system($cmd);
+	!$? || die "Error.  plycrunch failed.\n";
+	$plys .= "$out ";
+	$last = $out;
+    }
+    
+    # Now call plys2set to generate the .set file
+    $set = $orig;
+    $set =~ s/.ply/.set/g;
+    $cmd = "plys2set -q $set $plys\n";
+    system $cmd;
+}
+

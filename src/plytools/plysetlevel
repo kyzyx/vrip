@@ -1,0 +1,72 @@
+#!/usr/bin/perl
+#
+# This program takes one or more .set files, and chooses the nth
+# resolution listed as the default resolution.  Resolutions above
+# that are not preloaded.
+
+if ($#ARGV < 1 || substr($ARGV[0], 0, 1) eq "-") {
+    print STDERR "\n";
+    print STDERR "Usage: plysetlevel n 1.set 2.set 3.set ...\n";
+    print STDERR "\n";
+    print STDERR "       where n is an integer, usually from 1 to 4,\n";
+    print STDERR "       and is the desired level.  So it will set the\n";
+    print STDERR "       nth mesh in each .set file to be the default,\n";
+    print STDERR "       and all higher-res meshes will not be preloaded.\n";
+    print STDERR "       e.g:\n";
+    print STDERR "             plysetlevel 2 *.set\n";
+    print STDERR "       will tell every set to load in meshes 2..4,\n";
+    print STDERR "       and make mesh 2 the default.\n";
+    exit(-1);
+}
+
+# Default level
+$level = int($ARGV[0]);
+($level > 0) || die "Error: level must be greater than 0\n";
+
+# Process the files one by one
+for ($i=1; $i <= $#ARGV; $i++) {
+    $set = $ARGV[$i];
+    (substr($set, -4, 4) eq ".set") || die 
+	"Err: $set does not have .set extension.  Aborting...\n";
+    open(IN, $set);
+
+    # Read 'NumMeshes = 4'
+    $line = <IN>;
+    @words = split(' ', $line);
+    $nummeshes = $words[2];
+    # Sanity check
+    ($level > 0 && $nummeshes >= $level) || die 
+	"Error: $set doesn't have $level levels!\n";
+    
+    # Skip 'DefaultRes = 650006'
+    $line = <IN>;
+
+    # Read each of the meshes
+    for ($m=1; $m <= $nummeshes; $m++) {
+	$line = <IN>;
+	@words = split(' ', $line);
+	# Save mesh size, name
+	$meshsize[$m] = $words[1];
+	$meshname[$m] = $words[2];
+    }
+    
+    # Close file, open again for writing
+    close(IN);
+    open(OUT, ">".$set);
+    
+    # Write out new file
+    print OUT "NumMeshes = $nummeshes\n";
+    print OUT "DefaultRes = $meshsize[$level]\n";
+    # Write each mesh, noloading meshes higher than new default size
+    for ($m=1; $m <= $nummeshes; $m++) {
+	if ($m < $level) { 
+	    print OUT "noload  $meshsize[$m] $meshname[$m]\n";
+	} else {
+	    print OUT "preload $meshsize[$m] $meshname[$m]\n";
+	}
+    }
+    close(OUT);
+}
+		
+	    
+		

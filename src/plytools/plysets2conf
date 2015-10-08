@@ -1,0 +1,63 @@
+#!/usr/bin/perl
+#
+# plysets2conf:  This program takes a bunch of ply sets, and then
+# generates a conf file, which grabs the first listed ply file
+# for each set, and the matrix transform. 
+
+
+if (($#ARGV == -1) || ($ARGV[0] eq "-h")) {
+    print STDERR "\n";
+    print STDERR "Usage: plysets2conf [-l n] <1.set> <2.set> ... > all.conf\n";
+    print STDERR "\n";
+    print STDERR "The program will add the first-listed ply file for\n";
+    print STDERR "Each set to the conf file, as well as the xf.\n";
+    print STDERR "\n";
+    print STDERR "  -l    Use the nth level mesh.  E.g. if n is 1,\n";
+    print STDERR "        use the first mesh listed in each set file.\n";
+    print STDERR "\n";
+    print STDERR "Ex:  plysets2conf -l 4 a.set b.set\n";
+    print STDERR "     Will generate a .conf file with level 4 of each set.\n";
+    print STDERR "\n";
+    exit(-1);
+}
+
+# Set a resolution level.  1 is highest, 4 is lowest
+$reslev = 1;
+if ($ARGV[0] eq "-l") {
+    $reslev = int($ARGV[1]);
+    ($reslev > 0) || die "Error: res level must be greater than 0.\n";
+    # Cut first 2 arguments off the list so we ignore the number... :-)
+    splice(@ARGV, 0,2);
+}
+
+
+for ($argc=0; $argc <= $#ARGV; $argc++) {
+    $set = $ARGV[$argc];
+    open(SET, $set);
+    print STDERR "Using mesh $reslev of set $set...\n";
+    # skip first two lines, then skip to the right reslev...
+    for ($i=1; $i < 2+$reslev; $i++) {
+	<SET>;
+    }
+    $line = <SET>;
+    @words = split(' ', $line);
+    # Assertion check
+    if ($#words != 2) {
+	print STDERR "Error: $set does not contain a mesh number $reslev.\n";
+	exit(-1);
+    }
+    # Get directory, too
+    $plydir = $set;
+    while (length($plydir) > 0 && substr($plydir, -1, 1) ne "/") {
+	chop $plydir;
+    }
+
+    $plyname = $words[2];
+    $xf = $set;
+    $xf =~ s/.set/.xf/g;
+    $quat = `matrix2quat < $xf`;
+    $outline = "bmesh $plydir$plyname $quat";
+    print $outline;
+    close(SET);
+}
+

@@ -1,0 +1,109 @@
+#!/usr/bin/perl
+#
+# plybbox2cube:
+#    This script takes the output of plybbox and generates a
+# ply file with the actual faces of a cube for the bounding
+# box.
+#
+# usage:
+#   (see below)
+
+sub printUsage {
+    print STDERR "\n";
+    print STDERR "Usage: ply2bboxcube in1.ply [in2.ply] ...\n";
+    print STDERR "\n";
+    print STDERR "And it will generate files called in1.bboxcube.ply,\n";
+    print STDERR "in2.bboxcube.ply, etc.....\n";
+    print STDERR "Which contain all 12 faces of the bounding box.\n";
+    print STDERR "\n";
+    exit -1;
+}
+
+if ($#ARGV == -1 || substr($ARGV[0], 0, 1) eq "-") {
+    &printUsage();
+
+} else {
+    for ($i = 0; $i <= $#ARGV; $i++) {
+	$inname = $ARGV[$i];
+	# Check to make sure it ends in .ply
+	if (substr($inname, -4, 4) ne ".ply") {
+	    print STDERR "Err, $inname does not end in .ply, skipping...\n";
+	    next;
+	}
+	# open the input file
+	if (!open(IN, $inname)) {
+	    print STDERR "Err, cannot open input ply file $inname, ".
+		"skipping....\n";
+	    next;
+	}
+	#compute output file, make sure we're not overwriting input
+	$outname = $inname;
+	$outname =~ s/.ply/.bboxcube.ply/g;
+	if ($outname eq $inname) {
+	    print STDERR "Assertion failure. $outname == $inname? skipping.\n";
+	    next;
+	}
+	
+	# open output file
+	if (!open(OUT, ">$outname")) {
+	    print STDERR "Err, annot open output ply file $outname, ".
+		"skipping....\n";
+	    next;
+	}
+
+	# Run it
+	close(IN);
+	($minx, $miny, $minz, $maxx, $maxy, $maxz) = 
+	    split(' ', `plybbox $inname`);
+	&plybboxcreatecube($inname, OUT);
+	close(OUT);
+    }
+}
+
+sub plybboxcreatecube {
+    # Assume that these variables have been defined:
+    # $minx, $miny, $minz
+    # $maxx, $maxy, $maxz
+
+    #
+    #       3-----------1
+    #      /|          /|    Z
+    #     5-----------7 |    |
+    #     | |         | |    |  Y
+    #     | 6---------|-4    | /
+    #     |/          |/     |/
+    #     0-----------2      --------X
+    #
+
+    print OUT 
+"ply
+format ascii 1.0
+element vertex 8
+property float x
+property float y
+property float z
+element face 12
+property list uchar int vertex_indices
+end_header
+$minx $miny $minz
+$maxx $maxy $maxz
+$maxx $miny $minz
+$minx $maxy $maxz
+$maxx $maxy $minz
+$minx $miny $maxz
+$minx $maxy $minz
+$maxx $miny $maxz
+3 0 2 5
+3 5 2 7
+3 2 4 7
+3 7 4 1
+3 4 6 1
+3 1 6 3
+3 6 0 5
+3 6 5 3
+3 5 7 3
+3 3 7 1
+3 6 4 2
+3 6 2 0
+";
+}

@@ -1,0 +1,4 @@
+#!/bin/csh
+echo "/usr/bin/nice -20 scanalyze -noui /usr/graphics/project/scanner/scripts/mm2plys.tcl $argv[*] -dummy"
+/usr/bin/nice -20 scanalyze -noui /usr/graphics/project/scanner/scripts/mm2plys.tcl $argv[*] -dummy
+

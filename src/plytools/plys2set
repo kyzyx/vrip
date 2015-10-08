@@ -1,0 +1,124 @@
+#!/usr/bin/perl
+#
+# convert plys/xfs to set files
+# usage: plys2set <*.ply>
+
+# Extra -q arg...
+
+for ($i=1; $i <= $#ARGV; $i++) {
+    if ($ARGV[0] eq "-q") {
+	$QUIET = 1;
+	splice(@ARGV, 0,1);
+    } 
+    if ($ARGV[0] eq "-no_dir_strip") {
+	$NO_DIR_STRIP = 1;
+	splice(@ARGV, 0,1);
+    } 
+    if ($ARGV[0] eq "-no_xform") {
+	$NO_XFORM = 1;
+	splice(@ARGV, 0,1);
+   }
+}
+
+
+if ($#ARGV < 1 || substr($ARGV[0], 0, 1) eq "-") {
+    print STDERR "\n";
+    print STDERR "Usage:  plys2set [-q] [-no_dir_strip] [-no_xform] out.set x1.ply x2.ply...\n";
+    print STDERR "\n";
+    print STDERR "It checks to make sure out.set has the .set extension.\n";
+    print STDERR "Then it creates/overwrites the .set file, using the\n";
+    print STDERR "specified ply files.  If a corresponding .xf file\n";
+    print STDERR "does not exist, it creates one (with the identity\n";
+    print STDERR "matrix).  If the .xf file already exists, it does not\n";
+    print STDERR "touch it.  It sets the lowest resolution .ply file to\n";
+    print STDERR "be the default, and all others are not preloaded.\n";
+    print STDERR "\n";
+    exit(-1);
+}
+
+#figure out name of set, xf files
+$setname = $ARGV[0];
+$xfname = $setname;
+$xfname =~ s/.set/.xf/g;
+
+$setextension = substr($setname, -4, 4);
+if ($setextension ne ".set") {
+    die "Aborting, output set file $setname does not end in .set.\n";
+}
+
+#if xf file doesn't exist, create it
+if (!$NO_XFORM) {
+    if (!-e $xfname) {
+	open(XF, ">$xfname") || die "Couldn't open .xf file $xfname.\n";
+	# print STDERR "Creating identity .xf file $xfname...\n";
+	print XF "1 0 0 0\n";
+	print XF "0 1 0 0\n";
+	print XF "0 0 1 0\n";
+	print XF "0 0 0 1\n";
+	close XF;
+    }
+}
+
+
+# default, set default mesh to lowest res...
+$defaulttris = 1e20;
+$defaultmesh = 1;
+
+# For each ply file, get number of faces.
+for ($i=1; $i <= $#ARGV; $i++) {
+    $plyname[$i] = $ARGV[$i];
+    # get resolution (number of faces)
+    $resstr = `plyhead $plyname[$i] | grep face\n`;
+    ($a, $b, $res[$i]) = split(' ',$resstr);
+    
+
+    if ($res[$i] <= 0) {
+	$tstripstr = `plyhead $plyname[$i] | grep tristrip\n`;
+	if (length($tstripstr) > 0) {
+	    # Tstripped.  run through plystrip
+	    $resstr = `plystrip -u -q $plyname[$i] | plyhead | grep face\n`;
+	    ($a, $b, $res[$i]) = split(' ',$resstr);
+	    ($res[$i] > 0) || die "Failed counting faces in tstripped.\n";
+	} else {
+	    if (!$QUIET) {print STDERR "plys2set Warn: $plyname[$i] had 0 faces?\n";}
+	    $res[$i] = "0";
+	}
+    }
+    # Set default mesh to lowest res
+    if ($res[$i] < $defaulttris) {
+	$defaulttris = $res[$i];
+	$defaultmesh = $i;
+    }
+}
+
+# Generate the set file
+if (!$QUIET) {print STDOUT "generating $setname...\n";}
+open(SET, ">$setname");
+$i--;
+print SET "NumMeshes = $i\n";
+print SET "DefaultRes = $defaulttris\n";
+
+# Create the preload / noload lines...
+for ($j=1; $j <= $i; $j++) {
+    # strip directory path from .set files...
+    # (Assumes .set and .ply files are in same dir...)
+    if (!$NO_DIR_STRIP) {$plyname[$j] =~ s|.*/||g;}
+    if ($j == $defaultmesh) {
+	$meshlines[$j-1] = "preload $res[$j] $plyname[$j]\n";
+    } else {
+	$meshlines[$j-1] = "noload $res[$j] $plyname[$j]\n";
+    }
+}
+
+# Sort them by resolution, from biggest to smallest
+sub byRes {
+    @w1 = split(' ', $a);
+    @w2 = split(' ', $b);
+    $w2[1] <=> $w1[1];
+}
+
+# Print sorted lines to the .set file
+@sortedlines = sort byRes @meshlines;
+print SET @sortedlines;
+close SET;
+
